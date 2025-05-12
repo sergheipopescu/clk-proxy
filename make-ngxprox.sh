@@ -98,8 +98,9 @@ crontab -l | { cat; echo "0 5 * * 6 /usr/local/sbin/update-ngxblocker >/dev/null
 ###
 ## Enable streams (or not)
 ##
-
-read -p $'nginx Streams are \033[1;91m[not]\033[0m enabled. Enable now?           \033[32m>\033[0m ' -r -n 3 # ask confirmation to continue script
+echo
+echo
+read -p $'	nginx Streams are \033[1;91m[not]\033[0m enabled. Enable now?           \033[32m>\033[0m ' -r -n 3 # ask confirmation to continue script
 
 if [[ $REPLY =~ ^[Yy]+ ]]; then
 
