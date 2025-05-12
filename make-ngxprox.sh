@@ -35,7 +35,7 @@ echo -e '
 server {
 	
 	listen		80 default_server;
-	listen		443 default_server ssl;						# default SSL Port
+	listen		443 default_server ssl;						# default SSL port
 #	listen 9443 ssl proxy_protocol;							# proxy SSL port
 	ssl_certificate     /etc/nginx/ssl/blackhole.pem;				# SSL certificate
 	ssl_certificate_key /etc/nginx/ssl/blackhole.key;				# SSL Key
