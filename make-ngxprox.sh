@@ -61,7 +61,7 @@ sed -i 's|ssl_prefer_server_ciphers|# &|' /etc/nginx/nginx.conf
 cp -f "$scriptdir"/confs/clk.ngx.conf /etc/nginx/conf.d/clk.ngx.conf
 cp -f "$scriptdir"/confs/clk.streams.conf /etc/nginx/modules-available/clk.streams.conf
 cp -f "$scriptdir"/snips/* /etc/nginx/snippets
-cp -f "$scriptdir"/blocks/. /etc/nginx
+cp -f "$scriptdir"/blocks /etc/nginx
 
 # Logging | Create streams log directory
 mkdir /var/log/nginx/streams
