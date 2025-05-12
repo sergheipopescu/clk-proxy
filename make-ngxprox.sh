@@ -18,7 +18,7 @@ add-apt-repository ppa:ondrej/nginx-mainline -y
 
 # Install nginx
 apt-get update
-apt-get install nginx -y
+apt-get install nginx libnginx-mod-stream -y
 
 # Security | Remove defaults
 rm /etc/nginx/sites-enabled/default
