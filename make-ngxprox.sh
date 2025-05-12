@@ -35,8 +35,8 @@ echo -e '
 server {
 	
 	listen		80 default_server;
-	listen		443 default_server ssl;
-	
+	listen		443 default_server ssl;						# default SSL Port
+#	listen 9443 ssl proxy_protocol;							# proxy SSL port
 	ssl_certificate     /etc/nginx/ssl/blackhole.pem;				# SSL certificate
 	ssl_certificate_key /etc/nginx/ssl/blackhole.key;				# SSL Key
 	access_log /var/log/nginx/blackhole.log loghost;				# logging with loghost
@@ -110,16 +110,20 @@ if [[ $REPLY =~ ^[Yy]+ ]]; then
 	# comment out default port in srvblocks
 	sudo sed -i '/default SSL port/s/^/#/' /etc/nginx/blocks/ngx.srvblock
 	sudo sed -i '/default SSL port/s/^/#/' /etc/nginx/blocks/ngx.srwblock
+	sudo sed -i '/default SSL port/s/^/#/' /etc/nginx/sites-available/blackhole
 
 	# comment in proxy port in srvblocks
 	sudo sed -i '/proxy SSL port/s/^#//g' /etc/nginx/blocks/ngx.srvblock
 	sudo sed -i '/proxy SSL port/s/^#//g' /etc/nginx/blocks/ngx.srwblock
+	sudo sed -i '/proxy SSL port/s/^#//g' /etc/nginx/sites-available/blackhole
 
 	# comment in Real IP
 	sudo sed -i '/Set real IP/s/^#//g' /etc/nginx/blocks/ngx.srvblock
 	sudo sed -i '/Real IP header/s/^#//g' /etc/nginx/blocks/ngx.srvblock
 	sudo sed -i '/Set real IP/s/^#//g' /etc/nginx/blocks/ngx.srwblock
 	sudo sed -i '/Real IP header/s/^#//g' /etc/nginx/blocks/ngx.srwblock
+	sudo sed -i '/Set real IP/s/^#//g' /etc/nginx/sites-available/blackhole
+	sudo sed -i '/Real IP header/s/^#//g' /etc/nginx/sites-available/blackhole
 fi
 
 echo -e "\033[1;34m\n\n Reloading nginx proxy ...\033[0m\n"
