@@ -14,7 +14,7 @@ scriptdir=$(dirname "$(realpath "$0")") 								# set script directory
 ###############################
 
 # Add ondrej repo for newest version
-add-apt-repository ppa:ondrej/nginx-mainline -y
+add-apt-repository ppa:ondrej/nginx -y
 
 # Install nginx
 apt-get update
