@@ -132,4 +132,4 @@ echo -e "\033[1;34m\n\n Reloading nginx proxy ...\033[0m\n"
 
 systemctl restart nginx
 
-echo -e "\033[1;32m   nginx proxy installed! \033[0m \n"
+echo -e "\n\033[1;32m   nginx proxy installed! \033[0m \n"
