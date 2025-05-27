@@ -35,6 +35,7 @@ if [[ $REPLY =~ ^1 ]]; then
 elif [[ $REPLY =~ ^2 ]]; then
 
 	bash "$scriptdir"/inst-haproxy.sh
+	echo
 	bash "$scriptdir"/inst-ngxproxy.sh
 
 elif [[ $REPLY =~ ^3 ]]; then
