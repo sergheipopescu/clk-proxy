@@ -1,108 +1,108 @@
 #!/bin/bash
-# shellcheck disable=SC2016
 
-set -a										# export all variables
+###
+## Variables
+###
 
-engxsite() {
+# set -a										# export all variables
 
-	ln -s /etc/nginx/sites-available/"$tld" /etc/nginx/sites-enabled/"$tld" ; echo -e "\033[36m$tld\033[0m nginx site \033[32menabled\033[0m\n";
-}
+domap=/etc/haproxy/remotedomains.map
+domfile=/etc/haproxy/localdomains.file
+hpxcfg=/etc/haproxy/haproxy.cfg
 
-
-vhost()	{
-
-	< /etc/nginx/blocks/ngx.srvblock envsubst '$tld' |					# substitute current variable in read vhost
-	tee /etc/nginx/sites-available/"$tld" > /dev/null					# write nginx config file
-}
-
-whost()	{
-
-	< /etc/nginx/blocks/ngx.srwblock envsubst '$tld' |					# substitute current variable in read vhost
-	tee --append /etc/nginx/sites-available/"$tld" > /dev/null				# write nginx config file
-}
-
-if [[ "$*" == "" ]]; then											# if no arguments
+help () {
 
 	echo
+	echo -e "entld.proxy usage: \n\n-r for remote proxy; \n-l <fqdn.example.org> for local proxy; \n-h displays this help"
+	echo
+}
+###
+## Script
+###
 
-	read -r -p "Enter domain name: " tld									# Ask for domain and read input
 
-	if [[ "$tld" = *.*.* ]]; then										# if subdomain exists
+while getopts ":l:hr" flag; do
 
-		vhost
-		echo
-		certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$tld" ||
-			{
-				echo -e "\n \033[1;91mCertbot errored out\033[0m"
-				exit 1 
-			}
-		echo -e "\033[36m$tld\033[0m SSL Certificate \033[32minstalled\033[0m\n"
-		engxsite
+	case "${flag}" in
 
-	elif [[ "$tld" = *.* ]]; then										# if there is no subdomain
+	r)	echo
+		read -r -p "Enter domain name [fqdn]: " fqdn
+		read -r -p "Enter remote server [IP/fqdn]: " remdn
+		read -r -p "Enter remote port [integer]: " rempt
+		read -r -n 1 -p "Enable proxy protocol [y/N]: " pxy
 
-		vhost
-		whost
-		echo
-		certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$tld",www."$tld" ||
-			{
-				echo -e "\n \033[1;91mCertbot errored out\033[0m"
-				exit 1
-			}
-		echo -e "\033[36m$tld\033[0m SSL Certificate \033[32minstalled\033[0m\n"
-		engxsite
+		sdn="${remdn%%.*}"									# strip domain name from fqdn
 
-	else													# if the argument is not a domain
+		if [[ $pxy =~ ^[Yy] ]]; then								# proxy protocol enabled/disabled variable
 
-		clear												# clear screen
+			pxy="send-proxy-v2-ssl\n\n"
+		else
 
-		echo -e "\n \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m"		# print error
-
-		eval "$(basename "$0")" && exit									# restart script
-
-	fi
-
-else														# if arguments exist
-
-	for tld in "$@"; do 											# for each argument
-
-		if [[ "$tld" = *.*.* ]]; then 									# if the argument contains a subdomain
-
-			vhost
-			echo
-			certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$tld" ||
-				{
-					echo -e "\n \033[1;91mCertbot errored out\033[0m"
-					exit 1
-				}
-			echo -e "\033[36m$tld\033[0m SSL Certificate \033[32minstalled\033[0m\n"
-			engxsite
-
-		elif [[ "$tld" = *.* ]]; then 									# if the argument has no subdomain
-
-			vhost
-			whost
-			echo
-			certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$tld",www."$tld" ||
-				{
-					echo -e "\n \033[1;91mCertbot errored out\033[0m"
-					exit 1
-				}
-			echo -e "\033[36m$tld\033[0m SSL Certificate \033[32minstalled\033[0m\n"
-			engxsite
-
-		else												# if the argument is not a domain
-
-			clear										# clear screen
-
-			echo -e "\n \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m" # print error
-
-			eval "$(basename "$0")" && exit							# restart script
-
+			pxy="\n\n"
 		fi
 
-	done
+		echo
+		echo
+		read -p  $"     Enable HAProxy for $fqdn routed to backend $remdn?  > " -r -n 1
 
-fi
 
-systemctl reload nginx
+
+		if [[ $REPLY =~ ^[Yy] ]]; then
+
+		# Check for backend #
+			if ! grep -q "backend $remdn" $hpxcfg; then	
+
+
+				echo -e "\nbackend $remdn\n     server $sdn $remdn:$rempt check sni req.ssl_sni $pxy" | tee -a $hpxcfg >/dev/null
+				echo
+				echo -e "\nBackend created"
+
+			else
+				echo
+				echo -e "\nBackend exists"
+			fi
+
+
+		# Check for fqdn map #
+			if ! grep -q $fqdn $domap; then
+
+				echo -e "$fqdn        $remdn\n" | tee -a $domap >/dev/null
+				echo -e "\nDomain map created"
+
+			else
+				echo -e "\nDomain map exists"
+
+			fi
+
+		fi
+	;;
+
+	l)	if [[ "$OPTARG" == "" ]]; then
+
+			read -p -r "Enter fqdn: " fqdn
+			echo -e "$fqdn\n" | tee -a $domfile
+			eval "entld.ngx $fqdn"
+
+		else
+
+			echo -e "$OPTARG\n" | tee -a $domfile
+			eval "entld.ngx $OPTARG"
+
+		fi
+	;;
+
+	h)	help
+	;;
+
+	:)	help
+	;;
+
+	*) 	echo -e "\n \033[1;91m Error! Invalid option\033[0m\033[0;31m -$OPTARG\033[0m \n"
+		exit
+	;;
+	esac
+
+done
+
+systemctl reload haproxy
+

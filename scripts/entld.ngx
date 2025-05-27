@@ -1,0 +1,108 @@
+#!/bin/bash
+# shellcheck disable=SC2016
+
+set -a										# export all variables
+
+engxsite() {
+
+	ln -s /etc/nginx/sites-available/"$tld" /etc/nginx/sites-enabled/"$tld" ; echo -e "\033[36m$tld\033[0m nginx site \033[32menabled\033[0m\n";
+}
+
+
+vhost()	{
+
+	< /etc/nginx/blocks/ngx.srvblock envsubst '$tld' |					# substitute current variable in read vhost
+	tee /etc/nginx/sites-available/"$tld" > /dev/null					# write nginx config file
+}
+
+whost()	{
+
+	< /etc/nginx/blocks/ngx.srwblock envsubst '$tld' |					# substitute current variable in read vhost
+	tee --append /etc/nginx/sites-available/"$tld" > /dev/null				# write nginx config file
+}
+
+if [[ "$*" == "" ]]; then											# if no arguments
+
+	echo
+
+	read -r -p "Enter domain name: " tld									# Ask for domain and read input
+
+	if [[ "$tld" = *.*.* ]]; then										# if subdomain exists
+
+		vhost
+		echo
+		certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$tld" ||
+			{
+				echo -e "\n \033[1;91mCertbot errored out\033[0m"
+				exit 1 
+			}
+		echo -e "\033[36m$tld\033[0m SSL Certificate \033[32minstalled\033[0m\n"
+		engxsite
+
+	elif [[ "$tld" = *.* ]]; then										# if there is no subdomain
+
+		vhost
+		whost
+		echo
+		certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$tld",www."$tld" ||
+			{
+				echo -e "\n \033[1;91mCertbot errored out\033[0m"
+				exit 1
+			}
+		echo -e "\033[36m$tld\033[0m SSL Certificate \033[32minstalled\033[0m\n"
+		engxsite
+
+	else													# if the argument is not a domain
+
+		clear												# clear screen
+
+		echo -e "\n \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m"		# print error
+
+		eval "$(basename "$0")" && exit									# restart script
+
+	fi
+
+else														# if arguments exist
+
+	for tld in "$@"; do 											# for each argument
+
+		if [[ "$tld" = *.*.* ]]; then 									# if the argument contains a subdomain
+
+			vhost
+			echo
+			certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$tld" ||
+				{
+					echo -e "\n \033[1;91mCertbot errored out\033[0m"
+					exit 1
+				}
+			echo -e "\033[36m$tld\033[0m SSL Certificate \033[32minstalled\033[0m\n"
+			engxsite
+
+		elif [[ "$tld" = *.* ]]; then 									# if the argument has no subdomain
+
+			vhost
+			whost
+			echo
+			certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$tld",www."$tld" ||
+				{
+					echo -e "\n \033[1;91mCertbot errored out\033[0m"
+					exit 1
+				}
+			echo -e "\033[36m$tld\033[0m SSL Certificate \033[32minstalled\033[0m\n"
+			engxsite
+
+		else												# if the argument is not a domain
+
+			clear										# clear screen
+
+			echo -e "\n \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m" # print error
+
+			eval "$(basename "$0")" && exit							# restart script
+
+		fi
+
+	done
+
+fi
+
+systemctl reload nginx
