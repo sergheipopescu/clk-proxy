@@ -117,9 +117,9 @@ cp -f "$scriptdir"/confs/clk.ngx.conf /etc/nginx/conf.d/clk.ngx.conf
 cp -f "$scriptdir"/snips/* /etc/nginx/snippets
 cp -fr "$scriptdir"/blocks /etc/nginx
 
-# Install entld.proxy
-cp -f "$scriptdir"/scripts/entld.proxy /usr/sbin/entld.proxy
-chmod +x /usr/sbin/entld.proxy
+# Install entld.ngx
+cp -f "$scriptdir"/scripts/entld.ngx /usr/sbin/entld.ngx
+chmod +x /usr/sbin/entld.ngx
 
 # Install lampstart
 cp -f "$scriptdir"/scripts/lampstart /usr/sbin/lampstart
@@ -127,6 +127,11 @@ chmod +x /usr/sbin/lampstart
 
 # Logging | Enable loghost on default settings
 sed -i '/access_log/c\	include /etc/nginx/snippets/clk.ngx.loghost.snip;\n	access_log /var/log/nginx/access.log loghost;' /etc/nginx/nginx.conf
+
+# Install entld.proxy
+cp -f "$scriptdir"/scripts/entld.proxy /usr/sbin/entld.proxy
+chmod +x /usr/sbin/entld.proxy
+
 okay
 
 

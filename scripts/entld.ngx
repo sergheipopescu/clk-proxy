@@ -5,51 +5,51 @@ set -a										# export all variables
 
 engxsite() {
 
-	ln -s /etc/nginx/sites-available/"$tld" /etc/nginx/sites-enabled/"$tld" ; echo -e "\033[36m$tld\033[0m nginx site \033[32menabled\033[0m\n";
+	ln -s /etc/nginx/sites-available/"$fqdn" /etc/nginx/sites-enabled/"$fqdn" ; echo -e "\033[36m$fqdn\033[0m nginx site \033[32menabled\033[0m\n";
 }
 
 
 vhost()	{
 
-	< /etc/nginx/blocks/ngx.srvblock envsubst '$tld' |					# substitute current variable in read vhost
-	tee /etc/nginx/sites-available/"$tld" > /dev/null					# write nginx config file
+	< /etc/nginx/blocks/ngx.srvblock envsubst '$fqdn' |					# substitute current variable in read vhost
+	tee /etc/nginx/sites-available/"$fqdn" > /dev/null					# write nginx config file
 }
 
 whost()	{
 
-	< /etc/nginx/blocks/ngx.srwblock envsubst '$tld' |					# substitute current variable in read vhost
-	tee --append /etc/nginx/sites-available/"$tld" > /dev/null				# write nginx config file
+	< /etc/nginx/blocks/ngx.srwblock envsubst '$fqdn' |					# substitute current variable in read vhost
+	tee --append /etc/nginx/sites-available/"$fqdn" > /dev/null				# write nginx config file
 }
 
 if [[ "$*" == "" ]]; then											# if no arguments
 
 	echo
 
-	read -r -p "Enter domain name: " tld									# Ask for domain and read input
+	read -r -p "Enter domain name: " fqdn									# Ask for domain and read input
 
-	if [[ "$tld" = *.*.* ]]; then										# if subdomain exists
+	if [[ "$fqdn" = *.*.* ]]; then										# if subdomain exists
 
 		vhost
 		echo
-		certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$tld" ||
+		certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$fqdn" ||
 			{
 				echo -e "\n \033[1;91mCertbot errored out\033[0m"
 				exit 1 
 			}
-		echo -e "\033[36m$tld\033[0m SSL Certificate \033[32minstalled\033[0m\n"
+		echo -e "\033[36m$fqdn\033[0m SSL Certificate \033[32minstalled\033[0m\n"
 		engxsite
 
-	elif [[ "$tld" = *.* ]]; then										# if there is no subdomain
+	elif [[ "$fqdn" = *.* ]]; then										# if there is no subdomain
 
 		vhost
 		whost
 		echo
-		certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$tld",www."$tld" ||
+		certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$fqdn",www."$fqdn" ||
 			{
 				echo -e "\n \033[1;91mCertbot errored out\033[0m"
 				exit 1
 			}
-		echo -e "\033[36m$tld\033[0m SSL Certificate \033[32minstalled\033[0m\n"
+		echo -e "\033[36m$fqdn\033[0m SSL Certificate \033[32minstalled\033[0m\n"
 		engxsite
 
 	else													# if the argument is not a domain
@@ -64,31 +64,31 @@ if [[ "$*" == "" ]]; then											# if no arguments
 
 else														# if arguments exist
 
-	for tld in "$@"; do 											# for each argument
+	for fqdn in "$@"; do 											# for each argument
 
-		if [[ "$tld" = *.*.* ]]; then 									# if the argument contains a subdomain
+		if [[ "$fqdn" = *.*.* ]]; then 									# if the argument contains a subdomain
 
 			vhost
 			echo
-			certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$tld" ||
+			certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$fqdn" ||
 				{
 					echo -e "\n \033[1;91mCertbot errored out\033[0m"
 					exit 1
 				}
-			echo -e "\033[36m$tld\033[0m SSL Certificate \033[32minstalled\033[0m\n"
+			echo -e "\033[36m$fqdn\033[0m SSL Certificate \033[32minstalled\033[0m\n"
 			engxsite
 
-		elif [[ "$tld" = *.* ]]; then 									# if the argument has no subdomain
+		elif [[ "$fqdn" = *.* ]]; then 									# if the argument has no subdomain
 
 			vhost
 			whost
 			echo
-			certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$tld",www."$tld" ||
+			certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$fqdn",www."$fqdn" ||
 				{
 					echo -e "\n \033[1;91mCertbot errored out\033[0m"
 					exit 1
 				}
-			echo -e "\033[36m$tld\033[0m SSL Certificate \033[32minstalled\033[0m\n"
+			echo -e "\033[36m$fqdn\033[0m SSL Certificate \033[32minstalled\033[0m\n"
 			engxsite
 
 		else												# if the argument is not a domain

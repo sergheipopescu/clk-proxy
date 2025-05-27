@@ -64,6 +64,10 @@ sed -i 's|/var/log/haproxy.log|/var/log/haproxy/haproxy.log;HAProxy|' /etc/rsysl
 echo -e "#SNI\n" | tee /etc/haproxy/localdomains.file >/dev/null
 echo -e "#SNI	Remote Server\n" | tee /etc/haproxy/remotedomains.map >/dev/null
 
+# Install entld.hpx
+cp -f "$scriptdir"/scripts/entld.hpx /usr/sbin/entld.hpx
+chmod +x /usr/sbin/entld.hpx
+
 # Modify HAProxy logrotate.d logs location
 sed -i 's|/var/log/haproxy.log|/var/log/haproxy/*.log|' /etc/logrotate.d/haproxy
 

@@ -6,87 +6,75 @@
 
 # set -a										# export all variables
 
-domap=/etc/haproxy/remotedomains.map
-domfile=/etc/haproxy/localdomains.file
-hpxcfg=/etc/haproxy/haproxy.cfg
 
 help () {
 
 	echo
-	echo -e "entld.proxy usage: \n\n-r for remote proxy; \n-l <fqdn.example.org> for local proxy; \n-h displays this help"
+	echo -e "entld.proxy usage: \n\n-r for remote proxy; \n-l <fqdn.example.org> for local proxy; \n-n <fqdn.example.org> for nginx proxy\n-h displays this help"
 	echo
 }
+
+
+
 ###
 ## Script
 ###
 
-
-while getopts ":l:hr" flag; do
+while getopts ":l:n:hr" flag; do
 
 	case "${flag}" in
 
 	r)	echo
-		read -r -p "Enter domain name [fqdn]: " fqdn
-		read -r -p "Enter remote server [IP/fqdn]: " remdn
-		read -r -p "Enter remote port [integer]: " rempt
-		read -r -n 1 -p "Enable proxy protocol [y/N]: " pxy
 
-		sdn="${remdn%%.*}"									# strip domain name from fqdn
+		if command -v haproxy &>/dev/null; then					# Check if haproxy is installed
 
-		if [[ $pxy =~ ^[Yy] ]]; then								# proxy protocol enabled/disabled variable
+			entld.hpx -r
 
-			pxy="send-proxy-v2-ssl\n\n"
 		else
 
-			pxy="\n\n"
-		fi
-
-		echo
-		echo
-		read -p  $"     Enable HAProxy for $fqdn routed to backend $remdn?  > " -r -n 1
-
-
-
-		if [[ $REPLY =~ ^[Yy] ]]; then
-
-		# Check for backend #
-			if ! grep -q "backend $remdn" $hpxcfg; then	
-
-
-				echo -e "\nbackend $remdn\n     server $sdn $remdn:$rempt check sni req.ssl_sni $pxy" | tee -a $hpxcfg >/dev/null
-				echo
-				echo -e "\nBackend created"
-
-			else
-				echo
-				echo -e "\nBackend exists"
-			fi
-
-
-		# Check for fqdn map #
-			if ! grep -q $fqdn $domap; then
-
-				echo -e "$fqdn        $remdn\n" | tee -a $domap >/dev/null
-				echo -e "\nDomain map created"
-
-			else
-				echo -e "\nDomain map exists"
-
-			fi
-
+			echo -e "\nHAProxy is not installed"
 		fi
 	;;
 
-	l)	if [[ "$OPTARG" == "" ]]; then
+	l)	echo
 
-			read -p -r "Enter fqdn: " fqdn
-			echo -e "$fqdn\n" | tee -a $domfile
-			eval "entld.ngx $fqdn"
+		for fqdn in $OPTARG; do
+
+			if [[ "$fqdn" = *.* ]]; then
+
+				eval "entld.hpx -l $fqdn"
+				eval "entld.ngx $fqdn"
+
+			else
+
+				echo -e "\n \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m" 	# print error
+
+			fi
+
+		done
+	;;
+
+	n)	echo
+
+		if command -v haproxy &>/dev/null; then
+
+			echo -e "\nHAProxy is installed, use -l instead"
 
 		else
 
-			echo -e "$OPTARG\n" | tee -a $domfile
-			eval "entld.ngx $OPTARG"
+			for fqdn in $OPTARG; do
+
+				if [[ "$fqdn" = *.* ]]; then
+
+					eval "entld.ngx $fqdn"
+
+				else
+
+					echo -e "\n \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m" 	# print error
+
+				fi
+
+			done
 
 		fi
 	;;
@@ -103,6 +91,4 @@ while getopts ":l:hr" flag; do
 	esac
 
 done
-
-systemctl reload haproxy
-
+	
