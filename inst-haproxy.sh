@@ -31,9 +31,9 @@ makespin () {
 ## Script
 ###
 
-echo "		#################################"
-echo "		## Install & configure HAProxy ##"
-echo "		#################################"
+echo "		###############################"
+echo "		## Install&configure HAProxy ##"
+echo "		###############################"
 echo
 echo
 

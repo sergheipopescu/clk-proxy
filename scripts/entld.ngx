@@ -34,6 +34,7 @@ if [[ "$*" == "" ]]; then											# if no arguments
 		certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$fqdn" ||
 			{
 				echo -e "\n \033[1;91mCertbot errored out\033[0m"
+				rm -f /etc/nginx/sites-available/"$fqdn"
 				exit 1 
 			}
 		echo -e "\033[36m$fqdn\033[0m SSL Certificate \033[32minstalled\033[0m\n"
@@ -47,6 +48,7 @@ if [[ "$*" == "" ]]; then											# if no arguments
 		certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$fqdn",www."$fqdn" ||
 			{
 				echo -e "\n \033[1;91mCertbot errored out\033[0m"
+				rm -f /etc/nginx/sites-available/"$fqdn"
 				exit 1
 			}
 		echo -e "\033[36m$fqdn\033[0m SSL Certificate \033[32minstalled\033[0m\n"
@@ -73,6 +75,7 @@ else														# if arguments exist
 			certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$fqdn" ||
 				{
 					echo -e "\n \033[1;91mCertbot errored out\033[0m"
+					rm -f /etc/nginx/sites-available/"$fqdn"
 					exit 1
 				}
 			echo -e "\033[36m$fqdn\033[0m SSL Certificate \033[32minstalled\033[0m\n"
@@ -86,6 +89,7 @@ else														# if arguments exist
 			certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$fqdn",www."$fqdn" ||
 				{
 					echo -e "\n \033[1;91mCertbot errored out\033[0m"
+					rm -f /etc/nginx/sites-available/"$fqdn"
 					exit 1
 				}
 			echo -e "\033[36m$fqdn\033[0m SSL Certificate \033[32minstalled\033[0m\n"

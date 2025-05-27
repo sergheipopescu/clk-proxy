@@ -140,7 +140,7 @@ okay
 ## Install and configure Bad Bot Blocker for nginx
 ###
 
-echo -n "Installing Bad Bot Blocker for nginx ............"
+echo -n "Installing Bad Bot Blocker for nginx ............ "
 # download and run bbb installer
 wget https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/install-ngxblocker -O /usr/local/sbin/install-ngxblocker > /dev/null 2>&1
 chmod +x /usr/local/sbin/install-ngxblocker >/dev/null
@@ -190,7 +190,7 @@ else
 
 fi
 
-echo -e "\033[1;34m\n\n Reloading nginx proxy ...\033[0m\n"
+echo -e "\033[1;34m Reloading nginx proxy ...\033[0m\n"
 
 { echo -e "\033[36m\ntesting nginx config...\033[0m\n"; sudo nginx -q -t; } || { echo -e "\n\033[1;91mnginx config test failed. Review errors and retry\n"; exit 1; }
 

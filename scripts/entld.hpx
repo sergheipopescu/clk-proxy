@@ -84,12 +84,10 @@ while getopts ":l:hr" flag; do
 
 			read -p -r "Enter fqdn: " fqdn
 			echo -e "$fqdn\n" | tee -a $domfile
-			eval "entld.ngx $fqdn"
 
 		else
 
 			echo -e "$OPTARG\n" | tee -a $domfile
-			eval "entld.ngx $OPTARG"
 
 		fi
 	;;
