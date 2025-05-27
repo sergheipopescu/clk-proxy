@@ -26,19 +26,20 @@ echo "	2) HAProxy + nginx backend"
 echo "	3) nginx (optionally + streams)"
 echo
 read -p $'   Please choose an option           \033[32m>\033[0m ' -r -n 1 # ask confirmation to continue script
+echo -e "\n\n"
 
 if [[ $REPLY =~ ^1 ]]; then
 
-	"$scriptdir"/inst-haproxy.sh
+	bash "$scriptdir"/inst-haproxy.sh
 
 elif [[ $REPLY =~ ^2 ]]; then
 
-	"$scriptdir"/inst-haproxy.sh
-	"$scriptdir"/inst-ngxproxy.sh
+	bash "$scriptdir"/inst-haproxy.sh
+	bash "$scriptdir"/inst-ngxproxy.sh
 
 elif [[ $REPLY =~ ^3 ]]; then
 
-	"$scriptdir"/inst-ngxproxy.sh
+	bash "$scriptdir"/inst-ngxproxy.sh
 
 else
 	echo

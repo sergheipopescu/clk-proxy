@@ -72,7 +72,7 @@ chmod +x /usr/sbin/entld.hpx
 sed -i 's|/var/log/haproxy.log|/var/log/haproxy/*.log|' /etc/logrotate.d/haproxy
 
 # Ignore HAProxy run time process in lfd
-echo -e "\nexe:/usr/sbin/haproxy" | tee -a /etc/csf/csf.pignore
+echo -e "\nexe:/usr/sbin/haproxy" | tee -a /etc/csf/csf.pignore >/dev/null
 systemctl restart csf lfd
 
 okay

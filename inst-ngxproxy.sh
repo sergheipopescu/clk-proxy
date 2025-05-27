@@ -142,7 +142,7 @@ okay
 
 echo -n "Installing Bad Bot Blocker for nginx ............"
 # download and run bbb installer
-wget https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/install-ngxblocker -O /usr/local/sbin/install-ngxblocker >/dev/null
+wget https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/install-ngxblocker -O /usr/local/sbin/install-ngxblocker > /dev/null 2>&1
 chmod +x /usr/local/sbin/install-ngxblocker >/dev/null
 install-ngxblocker -x >/dev/null
 
@@ -150,7 +150,7 @@ install-ngxblocker -x >/dev/null
 rm /usr/local/sbin/setup-ngxblocker >/dev/null
 
 # schedule ngxblocker
-crontab -l | { cat; echo "0 5 * * 6 /usr/local/sbin/update-ngxblocker >/dev/null 2>&1"; } | crontab -
+crontab -l | { cat; echo "0 5 * * 6 /usr/local/sbin/update-ngxblocker >/dev/null 2>&1"; } | crontab - > /dev/null 2>&1
 okay
 
 
