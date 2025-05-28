@@ -21,25 +21,25 @@ IFS=","
 ## Script
 ###
 
+echo
+
 while getopts ":l:n:hr" flag; do
 
 	case "${flag}" in
 
-	r)	echo
-
-		if command -v haproxy &>/dev/null; then					# Check if haproxy is installed
+	r)	if command -v haproxy &>/dev/null; then					# Check if haproxy is installed
 
 			entld.hpx -r
 
 		else
 
 			echo -e "\nHAProxy is not installed"
+			echo
+
 		fi
 	;;
 
-	l)	echo
-
-		for fqdn in $OPTARG; do
+	l)	for fqdn in $OPTARG; do
 
 			if [[ "$fqdn" = *.* ]]; then
 
@@ -48,18 +48,19 @@ while getopts ":l:n:hr" flag; do
 
 			else
 
-				echo -e "\n \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m" 	# print error
+				echo -e " \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m" 	# print error
+				echo
 
 			fi
 
 		done
 	;;
 
-	n)	echo
+	n)	if command -v haproxy &>/dev/null; then
 
-		if command -v haproxy &>/dev/null; then
-
-			echo -e "\nHAProxy is installed, use -l instead"
+			echo
+			echo -e "HAProxy is installed, use -l instead"
+			echo
 
 		else
 
@@ -71,7 +72,8 @@ while getopts ":l:n:hr" flag; do
 
 				else
 
-					echo -e "\n \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m" 	# print error
+					echo -e " \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m" 	# print error
+					echo
 
 				fi
 
