@@ -33,7 +33,7 @@ while getopts ":l:n:hr" flag; do
 
 		else
 
-			echo -e "\nHAProxy is not installed"
+			echo -e "HAProxy is not installed"
 			echo
 
 		fi
@@ -48,7 +48,7 @@ while getopts ":l:n:hr" flag; do
 
 			else
 
-				echo -e " \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m" 	# print error
+				echo -e " $fqdn	- \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m" 	# print error
 				echo
 
 			fi
@@ -58,7 +58,6 @@ while getopts ":l:n:hr" flag; do
 
 	n)	if command -v haproxy &>/dev/null; then
 
-			echo
 			echo -e "HAProxy is installed, use -l instead"
 			echo
 
@@ -72,7 +71,7 @@ while getopts ":l:n:hr" flag; do
 
 				else
 
-					echo -e " \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m" 	# print error
+					echo -e " $fqdn	- \033[1;91m Wrong domain format\033[0m  \033[0;31m Try again. \033[0m" 	# print error
 					echo
 
 				fi

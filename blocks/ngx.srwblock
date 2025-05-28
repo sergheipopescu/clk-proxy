@@ -4,13 +4,13 @@
 
 server {																			# start www redirect block
 
-	server_name www.$tld;									# server name
+	server_name www.$fqdn;									# server name
 
 	listen 80;										# HTTP port							# HTTP port
 	listen 443 ssl;										# default SSL port
 #	listen 9443 ssl proxy_protocol;								# proxy SSL port
-	ssl_certificate /etc/letsencrypt/live/$tld/fullchain.pem;				# SSL certificate
-	ssl_certificate_key /etc/letsencrypt/live/$tld/privkey.pem;				# SSL private key
+	ssl_certificate /etc/letsencrypt/live/$fqdn/fullchain.pem;				# SSL certificate
+	ssl_certificate_key /etc/letsencrypt/live/$fqdn/privkey.pem;				# SSL private key
 
 
 	###
@@ -26,9 +26,9 @@ server {																			# start www redirect block
 	###
 
 	include /etc/nginx/snippets/clk.ngx.lognone.snip;						# logging exclusions / activated by snippet
-	access_log /var/log/nginx/$tld.www.access.log loghost if=$mainlog;			# access log
-	error_log /var/log/nginx/$tld.www.error.log error;					# error log
-	access_log /var/log/nginx/$tld.www.blockbots.log combined if=$return_444;		# 444 returns log / activated by snippet
+	access_log /var/log/nginx/$fqdn.www.access.log loghost if=$mainlog;			# access log
+	error_log /var/log/nginx/$fqdn.www.error.log error;					# error log
+	access_log /var/log/nginx/$fqdn.www.blockbots.log combined if=$return_444;		# 444 returns log / activated by snippet
 
 
 	###
@@ -44,7 +44,7 @@ server {																			# start www redirect block
 	###
 	
 	location / {
-		return 301 https://$tld$request_uri;
+		return 301 https://$fqdn$request_uri;
 	}
 
 

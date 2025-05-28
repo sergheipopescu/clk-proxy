@@ -8,17 +8,22 @@ set -a													# export all variables
 
 scriptdir=$(dirname "$(realpath "$0")") 								# set script directory
 
+cln=$(echo -en '\033[0m')
+grn=$(echo -en '\033[32m')
+cyn=$(echo -en '\033[36m')
+bred=$(echo -en '\033[1;91m')
+
 
 okay () {
-	echo -e "[\033[32m OK \033[0m]\n"								# print okay function
+	echo -e "[${grn} OK ${cln}]\n"								# print okay function
 }
 
 fail () {
-	echo -e "\n \033[1;91m[FAILED]\033[0m"; echo; exit 1						# print fail and exit function
+	echo -e "\n ${bred}[FAILED]${cln}\n"; exit 1						# print fail and exit function
 }
 
 spinny () {
-	while :; do for c in / - \\ \|; do printf '%s\b' "$c"; sleep 0.1; done; done			# spinner
+	while :; do for c in "   /" "   -" "   \\" "   \|"; do printf '%s\b' "$c"; sleep 0.1; done; done			# spinner
 }
 
 makespin () {
@@ -31,11 +36,15 @@ makespin () {
 ## Script
 ###
 
-echo "		###############################"
-echo "		## Install&configure HAProxy ##"
-echo "		###############################"
+echo "${cyn}"
+echo "		#################################"
+echo "		## Install & configure HAProxy ##"
+echo "		#################################"
+echo "${cln}"
 echo
-echo
+
+# cursor off
+tput civis
 
 # Update repositories
 echo -n "Updating repositories ........................... "
@@ -76,3 +85,6 @@ echo -e "\nexe:/usr/sbin/haproxy" | tee -a /etc/csf/csf.pignore >/dev/null
 systemctl restart csf lfd
 
 okay
+
+# Cursor on
+tput cnorm

@@ -8,24 +8,29 @@ set -a													# export all variables
 
 scriptdir=$(dirname "$(realpath "$0")") 								# set script directory
 
-
+cln=$(echo -en '\033[0m')
+red=$(echo -en '\033[31m')
+grn=$(echo -en '\033[32m')
+ylw=$(echo -en '\033[33m')
+cyn=$(echo -en '\033[36m')
+bred=$(echo -en '\033[1;91m')
 
 ###
 ## Script
-###
+### 
 clear
 echo
+echo "${cyn}"
+echo "		#################################"
+echo "		##  Clickwork Proxy Installer  ##"
+echo "		#################################"
+echo "${cln}"
 echo
-echo "		###############################"
-echo "		## Clickwork Proxy Installer ##"
-echo "		###############################"
+echo "	1) ${ylw}HAProxy${cln} + ${grn}nginx${cln} backend"
+echo "	2) ${ylw}HAProxy${cln}"
+echo "	3) ${grn}nginx${cln} (optionally + ${red}streams${cln})"
 echo
-echo
-echo "	1) HAProxy + nginx backend"
-echo "	2) HAProxy"
-echo "	3) nginx (optionally + streams)"
-echo
-read -p $'   Please choose an option           \033[32m>\033[0m ' -r -n 1 # ask confirmation to continue script
+read -p $"   Please choose an option           ${grn}>${cln} " -r -n 1 # ask confirmation to continue script
 echo -e "\n\n"
 
 if [[ $REPLY =~ ^1 ]]; then
@@ -45,7 +50,7 @@ elif [[ $REPLY =~ ^3 ]]; then
 else
 	echo
 
-	while read -p $'	\033[1;91mBad\033[0m choice. Restart?  [Y/n]         \033[32m>\033[0m ' -r -n 1; do
+	while read -p $"	${bred}Bad${cln} choice. Restart?  [Y/n]         ${grn}>${cln} " -r -n 1; do
 
 		if [[ ${REPLY:-Y} =~ ^[Yy] ]]; then
 

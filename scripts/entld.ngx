@@ -3,9 +3,14 @@
 
 set -a										# export all variables
 
+cln=$(echo -en '\033[0m')
+grn=$(echo -en '\033[32m')
+cyn=$(echo -en '\033[36m')
+bred=$(echo -en '\033[1;91m')
+
 engxsite() {
 
-	ln -s /etc/nginx/sites-available/"$fqdn" /etc/nginx/sites-enabled/"$fqdn" ; echo -e "\033[36m$fqdn\033[0m nginx site \033[32menabled\033[0m\n";
+	ln -s /etc/nginx/sites-available/"$fqdn" /etc/nginx/sites-enabled/"$fqdn" ; echo -e "${cyn}$fqdn${cln} nginx site ${grn}enabled${cln}\n";
 }
 
 
@@ -21,6 +26,30 @@ whost()	{
 	tee --append /etc/nginx/sites-available/"$fqdn" > /dev/null				# write nginx config file
 }
 
+okay () {
+	echo -e "[${grn} OK ${cln}]\n"								# print okay function
+}
+
+fail () {
+	echo -e "\n ${bred}Certbot errored out${cln}\n"; rm -f /etc/nginx/sites-available/"$fqdn"; exit 1
+}
+
+spinny () {
+	while :; do for c in "   /" "   -" "   \\" "   \|"; do printf '%s\b' "$c"; sleep 0.1; done; done			# spinner
+}
+
+makespin () {
+        eval "spinny & $1 &> /dev/null || fail ; { okay; kill $! && wait $!; } 2>/dev/null"
+}
+
+getcert () {
+
+	certbot certonly --nginx --non-interactive --agree-tos --quiet --test-cert -m postmaster@"$fqdn" -d "$fqdn""$veveve"
+
+}
+
+veveve=",www.${fqdn}"
+
 if [[ "$*" == "" ]]; then											# if no arguments
 
 	echo
@@ -31,13 +60,9 @@ if [[ "$*" == "" ]]; then											# if no arguments
 
 		vhost
 		echo
-		certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$fqdn" ||
-			{
-				echo -e "\n \033[1;91mCertbot errored out\033[0m"
-				rm -f /etc/nginx/sites-available/"$fqdn"
-				exit 1 
-			}
-		echo -e "\033[36m$fqdn\033[0m SSL Certificate \033[32minstalled\033[0m\n"
+		echo -en "Getting certificate for $fqdn ................... "
+		makespin "getcert" 
+		echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
 		engxsite
 
 	elif [[ "$fqdn" = *.* ]]; then										# if there is no subdomain
@@ -45,20 +70,17 @@ if [[ "$*" == "" ]]; then											# if no arguments
 		vhost
 		whost
 		echo
-		certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$fqdn",www."$fqdn" ||
-			{
-				echo -e "\n \033[1;91mCertbot errored out\033[0m"
-				rm -f /etc/nginx/sites-available/"$fqdn"
-				exit 1
-			}
-		echo -e "\033[36m$fqdn\033[0m SSL Certificate \033[32minstalled\033[0m\n"
+		echo -en "Getting certificate for $fqdn ................... "
+		veveve=",www.${fqdn}"
+		makespin "getcert"
+		echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
 		engxsite
 
 	else													# if the argument is not a domain
 
 		clear												# clear screen
 
-		echo -e "\n \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m"		# print error
+		echo -e "\n ${bred} Wrong domain format.${cln}  \033[0;31m Try again. ${cln}"		# print error
 
 		eval "$(basename "$0")" && exit									# restart script
 
@@ -72,13 +94,9 @@ else														# if arguments exist
 
 			vhost
 			echo
-			certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$fqdn" ||
-				{
-					echo -e "\n \033[1;91mCertbot errored out\033[0m"
-					rm -f /etc/nginx/sites-available/"$fqdn"
-					exit 1
-				}
-			echo -e "\033[36m$fqdn\033[0m SSL Certificate \033[32minstalled\033[0m\n"
+			echo -en "Getting certificate for $fqdn ................... "
+			makespin "getcert" 
+			echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
 			engxsite
 
 		elif [[ "$fqdn" = *.* ]]; then 									# if the argument has no subdomain
@@ -86,20 +104,17 @@ else														# if arguments exist
 			vhost
 			whost
 			echo
-			certbot certonly --nginx --non-interactive --agree-tos --quiet -m certs@clickwork.ro -d "$fqdn",www."$fqdn" ||
-				{
-					echo -e "\n \033[1;91mCertbot errored out\033[0m"
-					rm -f /etc/nginx/sites-available/"$fqdn"
-					exit 1
-				}
-			echo -e "\033[36m$fqdn\033[0m SSL Certificate \033[32minstalled\033[0m\n"
+			echo -en "Getting certificate for $fqdn ................... "
+			veveve=",www.${fqdn}"
+			makespin "getcert"
+			echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
 			engxsite
 
 		else												# if the argument is not a domain
 
 			clear										# clear screen
 
-			echo -e "\n \033[1;91m Wrong domain format.\033[0m  \033[0;31m Try again. \033[0m" # print error
+			echo -e "\n ${bred} Wrong domain format.${cln}  \033[0;31m Try again. ${cln}" # print error
 
 			eval "$(basename "$0")" && exit							# restart script
 

@@ -8,12 +8,18 @@ set -a													# export all variables
 
 scriptdir=$(dirname "$(realpath "$0")") 								# set script directory
 
+cln=$(echo -en '\033[0m')
+grn=$(echo -en '\033[32m')
+cyn=$(echo -en '\033[36m')
+bred=$(echo -en '\033[1;91m')
+
+
 okay () {
-	echo -e "[\033[32m OK \033[0m]\n"								# print okay function
+	echo -e "[${grn} OK ${cln}]\n"								# print okay function
 }
 
 fail () {
-	echo -e "\n \033[1;91m[FAILED]\033[0m"; echo; exit 1						# print fail and exit function
+	echo -e "\n ${bred}[FAILED]${cln}\n"; exit 1						# print fail and exit function
 }
 
 spinny () {
@@ -49,12 +55,15 @@ nginx-backend () {
 ## Script
 ###
 
-echo "		###############################"
-echo "		## Install & configure nginx ##"
-echo "		###############################"
-echo
+echo "${cyn}"
+echo "		#################################"
+echo "		##  Install & configure nginx  ##"
+echo "		#################################"
+echo "${cln}"
 echo
 
+# cursor off
+tput civis
 
 # Add ondrej repo for newest version
 echo -n "Add nginx repository ............................ "
@@ -197,5 +206,8 @@ echo -e "\033[1;34m Reloading nginx proxy ...\033[0m\n"
 systemctl restart nginx
 
 rm -rf "$scriptdir"
+
+# Cursor on
+tput cnorm
 
 echo -e "\n\033[1;32m   nginx proxy installed! \033[0m \n"
