@@ -92,4 +92,8 @@ while getopts ":l:n:hr" flag; do
 	esac
 
 done
-	
+
+if [ "$#" == 0 ]; then
+	help
+	exit 1
+fi
