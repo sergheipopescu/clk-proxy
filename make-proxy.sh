@@ -21,8 +21,8 @@ echo "		## Clickwork Proxy Installer ##"
 echo "		###############################"
 echo
 echo
-echo "	1) HAProxy"
-echo "	2) HAProxy + nginx backend"
+echo "	1) HAProxy + nginx backend"
+echo "	2) HAProxy"
 echo "	3) nginx (optionally + streams)"
 echo
 read -p $'   Please choose an option           \033[32m>\033[0m ' -r -n 1 # ask confirmation to continue script
@@ -31,12 +31,12 @@ echo -e "\n\n"
 if [[ $REPLY =~ ^1 ]]; then
 
 	bash "$scriptdir"/inst-haproxy.sh
+	echo -e "\n\n"
+	bash "$scriptdir"/inst-ngxproxy.sh
 
 elif [[ $REPLY =~ ^2 ]]; then
 
 	bash "$scriptdir"/inst-haproxy.sh
-	echo -e "\n\n"
-	bash "$scriptdir"/inst-ngxproxy.sh
 
 elif [[ $REPLY =~ ^3 ]]; then
 
