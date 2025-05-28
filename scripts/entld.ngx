@@ -4,6 +4,7 @@
 set -a										# export all variables
 
 cln=$(echo -en '\033[0m')
+red=$(echo -en '\033[0;31m')
 grn=$(echo -en '\033[32m')
 cyn=$(echo -en '\033[36m')
 bred=$(echo -en '\033[1;91m')
@@ -27,7 +28,7 @@ whost()	{
 }
 
 okay () {
-	echo -e "[${grn} OK ${cln}]\n"								# print okay function
+	echo -e "\b\b[${grn} OK ${cln}]\n"								# print okay function
 }
 
 fail () {
@@ -35,7 +36,7 @@ fail () {
 }
 
 spinny () {
-	while :; do for c in "   /" "   -" "   \\" "   \|"; do printf '%s\b' "$c"; sleep 0.1; done; done			# spinner
+	while :; do for c in / - \\ \|; do printf '%s\b' "$c"; sleep 0.1; done; done			# spinner
 }
 
 makespin () {
@@ -60,7 +61,7 @@ if [[ "$*" == "" ]]; then											# if no arguments
 
 		vhost
 		echo
-		echo -en "Getting certificate for $fqdn ................... "
+		echo -en "Getting certificate for $fqdn ...................   "
 		makespin "getcert" 
 		echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
 		engxsite
@@ -70,7 +71,7 @@ if [[ "$*" == "" ]]; then											# if no arguments
 		vhost
 		whost
 		echo
-		echo -en "Getting certificate for $fqdn ................... "
+		echo -en "Getting certificate for $fqdn ...................   "
 		veveve=",www.${fqdn}"
 		makespin "getcert"
 		echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
@@ -80,7 +81,7 @@ if [[ "$*" == "" ]]; then											# if no arguments
 
 		clear												# clear screen
 
-		echo -e "\n ${bred} Wrong domain format.${cln}  \033[0;31m Try again. ${cln}"		# print error
+		echo -e "\n ${bred} Wrong domain format.${cln}  ${red} Try again. ${cln}"		# print error
 
 		eval "$(basename "$0")" && exit									# restart script
 
@@ -94,7 +95,7 @@ else														# if arguments exist
 
 			vhost
 			echo
-			echo -en "Getting certificate for $fqdn ................... "
+			echo -en "Getting certificate for $fqdn ...................   "
 			makespin "getcert" 
 			echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
 			engxsite
@@ -104,7 +105,7 @@ else														# if arguments exist
 			vhost
 			whost
 			echo
-			echo -en "Getting certificate for $fqdn ................... "
+			echo -en "Getting certificate for $fqdn ...................   "
 			veveve=",www.${fqdn}"
 			makespin "getcert"
 			echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
@@ -114,7 +115,7 @@ else														# if arguments exist
 
 			clear										# clear screen
 
-			echo -e "\n ${bred} Wrong domain format.${cln}  \033[0;31m Try again. ${cln}" # print error
+			echo -e "\n ${bred} Wrong domain format.${cln}  ${red} Try again. ${cln}" # print error
 
 			eval "$(basename "$0")" && exit							# restart script
 

@@ -15,7 +15,7 @@ bred=$(echo -en '\033[1;91m')
 
 
 okay () {
-	echo -e "[${grn} OK ${cln}]\n"								# print okay function
+	echo -e "\b\b[${grn} OK ${cln}]\n"								# print okay function
 }
 
 fail () {
@@ -23,7 +23,7 @@ fail () {
 }
 
 spinny () {
-	while :; do for c in "   /" "   -" "   \\" "   \|"; do printf '%s\b' "$c"; sleep 0.1; done; done			# spinner
+	while :; do for c in / - \\ \|; do printf '%s\b' "$c"; sleep 0.1; done; done			# spinner
 }
 
 makespin () {
@@ -47,14 +47,14 @@ echo
 tput civis
 
 # Update repositories
-echo -n "Updating repositories ........................... "
+echo -n "Updating repositories ...........................   "
 makespin "apt-get update"
 
 # Install HAProxy
-echo -n "Installing HAProxy .............................. "
+echo -n "Installing HAProxy ..............................   "
 makespin "apt-get install haproxy -y"
 
-echo -n "Installing HAProxy customization ................ "
+echo -n "Installing HAProxy customization ................   "
 
 # Backup default config
 mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
