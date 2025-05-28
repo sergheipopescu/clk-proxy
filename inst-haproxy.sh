@@ -71,7 +71,7 @@ sed -i 's|/var/log/haproxy.log|/var/log/haproxy/haproxy.log;HAProxy|' /etc/rsysl
 
 # Touch mapfiles
 echo -e "#SNI\n" | tee /etc/haproxy/localdomains.file >/dev/null
-echo -e "#SNI	Remote Server\n" | tee /etc/haproxy/remotedomains.map >/dev/null
+echo -e "#SNI		Remote Server\n" | tee /etc/haproxy/remotedomains.map >/dev/null
 
 # Install entld.hpx
 cp -f "$scriptdir"/scripts/entld.hpx /usr/sbin/entld.hpx

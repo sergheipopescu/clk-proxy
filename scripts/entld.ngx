@@ -45,11 +45,11 @@ makespin () {
 
 getcert () {
 
-	certbot certonly --nginx --non-interactive --agree-tos --quiet --test-cert -m postmaster@"$fqdn" -d "$fqdn""$veveve"
-
+#	certbot certonly --nginx --non-interactive --agree-tos --quiet --test-cert -m postmaster@"$fqdn" -d "$fqdn""$veveve"
+	echo -e "Certificate requested: $fqdn$veveve\n"
 }
 
-veveve=",www.${fqdn}"
+veveve=""
 
 if [[ "$*" == "" ]]; then											# if no arguments
 
@@ -59,23 +59,23 @@ if [[ "$*" == "" ]]; then											# if no arguments
 
 	if [[ "$fqdn" = *.*.* ]]; then										# if subdomain exists
 
-		vhost
+#		vhost
 		echo
 		echo -en "Getting certificate for $fqdn ...................   "
 		makespin "getcert" 
 		echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
-		engxsite
+#		engxsite
 
 	elif [[ "$fqdn" = *.* ]]; then										# if there is no subdomain
 
-		vhost
-		whost
+#		vhost
+#		whost
 		echo
 		echo -en "Getting certificate for $fqdn ...................   "
 		veveve=",www.${fqdn}"
 		makespin "getcert"
 		echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
-		engxsite
+#		engxsite
 
 	else													# if the argument is not a domain
 
@@ -93,23 +93,23 @@ else														# if arguments exist
 
 		if [[ "$fqdn" = *.*.* ]]; then 									# if the argument contains a subdomain
 
-			vhost
+#			vhost
 			echo
 			echo -en "Getting certificate for $fqdn ...................   "
 			makespin "getcert" 
 			echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
-			engxsite
+#			engxsite
 
 		elif [[ "$fqdn" = *.* ]]; then 									# if the argument has no subdomain
 
-			vhost
-			whost
+#			vhost
+#			whost
 			echo
 			echo -en "Getting certificate for $fqdn ...................   "
 			veveve=",www.${fqdn}"
 			makespin "getcert"
 			echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
-			engxsite
+#			engxsite
 
 		else												# if the argument is not a domain
 
