@@ -15,7 +15,7 @@ bred=$(echo -en '\033[1;91m')
 
 
 okay () {
-	echo -e "[${grn} OK ${cln}]\n"								# print okay function
+	echo -e "\b\b[${grn} OK ${cln}]\n"								# print okay function
 }
 
 fail () {
@@ -66,31 +66,31 @@ echo
 tput civis
 
 # Add ondrej repo for newest version
-echo -n "Add nginx repository ............................ "
+echo -n "Add nginx repository ............................   "
 makespin "add-apt-repository ppa:ondrej/nginx -y"
 
 # Update repositories
-echo -n "Updating repositories ........................... "
+echo -n "Updating repositories ...........................   "
 makespin "apt-get update"
 
 # Install nginx
-echo -n "Installing nginx ................................ "
+echo -n "Installing nginx ................................   "
 makespin "apt-get install nginx -y"
 
 # Security | Remove defaults
-echo -n "Removing defaults ............................... "
+echo -n "Removing defaults ...............................   "
 rm /etc/nginx/sites-enabled/default
 rm /var/www/html/*
 rmdir /var/www/html
 okay
 
 # Security | Create pem certificate for blackhole
-echo -n "Creating default certificate for blackhole ...... "
+echo -n "Creating default certificate for blackhole ......   "
 mkdir /etc/nginx/ssl
 makespin "openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -keyout /etc/nginx/ssl/blackhole.key -out /etc/nginx/ssl/blackhole.pem -sha256 -days 3650 -nodes -subj "/CN=Cyg X-1""
 
 # Security | Create vhost for blackhole
-echo -n "Creating blackhole .............................. "
+echo -n "Creating blackhole ..............................   "
 echo -e '
 # Blackhole server for requests without SNI
 server {
@@ -111,17 +111,17 @@ ln -s /etc/nginx/sites-available/blackhole /etc/nginx/sites-enabled/blackhole
 okay
 
 # SSL | Create dhparam file
-echo -n "Creating dhparam file ........................... "
+echo -n "Creating dhparam file ...........................   "
 makespin "openssl dhparam -dsaparam -out /etc/nginx/ssl/dhparam.pem 4096"
 
 # SSL | Disable ssl protocols in default config
-echo -n "Cleanup default config .......................... "
+echo -n "Cleanup default config ..........................   "
 sed -i 's|ssl_protocols|# &|' /etc/nginx/nginx.conf
 sed -i 's|ssl_prefer_server_ciphers|# &|' /etc/nginx/nginx.conf
 okay
 
 # Install clk files
-echo -n "Installing custom configuration and scripts ..... "
+echo -n "Installing custom configuration and scripts .....   "
 cp -f "$scriptdir"/confs/clk.ngx.conf /etc/nginx/conf.d/clk.ngx.conf
 cp -f "$scriptdir"/snips/* /etc/nginx/snippets
 cp -fr "$scriptdir"/blocks /etc/nginx
@@ -149,7 +149,7 @@ okay
 ## Install and configure Bad Bot Blocker for nginx
 ###
 
-echo -n "Installing Bad Bot Blocker for nginx ............ "
+echo -n "Installing Bad Bot Blocker for nginx ............   "
 # download and run bbb installer
 wget https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/install-ngxblocker -O /usr/local/sbin/install-ngxblocker > /dev/null 2>&1
 chmod +x /usr/local/sbin/install-ngxblocker >/dev/null
@@ -163,6 +163,7 @@ echo -n | crontab -
 crontab -l | { cat; echo "0 5 * * 6 /usr/local/sbin/update-ngxblocker >/dev/null 2>&1"; } | crontab - 
 okay
 
+echo -e "\033[1;34m Reloading nginx proxy ...\033[0m\n"
 
 ###
 ## Enable streams (or not)
@@ -181,10 +182,10 @@ else
 	if [[ $REPLY =~ ^[Yy]+ ]]; then
 
 		# Install mod-stream
-		echo -n "Installing nginx stream module .................. "
+		echo -n "Installing nginx stream module ..................   "
 		makespin "apt-get install libnginx-mod-stream -y"
 
-		echo -n "Configuring nginx streams ....................... "
+		echo -n "Configuring nginx streams .......................   "
 
 		# Copy config and enable streams.conf
 		cp -f "$scriptdir"/confs/clk.streams.conf /etc/nginx/modules-available/clk.streams.conf
@@ -199,13 +200,9 @@ else
 
 fi
 
-echo -e "\033[1;34m Reloading nginx proxy ...\033[0m\n"
-
 { echo -e "\033[36m\ntesting nginx config...\033[0m\n"; sudo nginx -q -t; } || { echo -e "\n\033[1;91mnginx config test failed. Review errors and retry\n"; exit 1; }
 
 systemctl restart nginx
-
-rm -rf "$scriptdir"
 
 # Cursor on
 tput cnorm

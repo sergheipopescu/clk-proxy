@@ -70,4 +70,5 @@ else
 fi
 
 echo Cleanup?
+#rm -rf "$scriptdir"
 echo
