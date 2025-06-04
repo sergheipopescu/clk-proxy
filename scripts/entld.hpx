@@ -63,10 +63,10 @@ while getopts ":l:hr" flag; do
 			if ! grep -q "$fqdn" $domap; then
 
 				echo -e "$fqdn       	$remdn\n" | tee -a $domap >/dev/null
-				echo -e "\nDomain map ${grn}created${cln}\n"
+				echo -e "\n\n\nDomain map ${grn}created${cln}\n"
 
 			else
-				echo -e "\nDomain map ${ylw}exists${cln}\nBackend ${red}NOT${cln} created"
+				echo -e "\n\n\nDomain map ${ylw}exists${cln}\n\nBackend ${red}NOT${cln} created\n"
 				exit 0
 			fi
 
@@ -75,12 +75,10 @@ while getopts ":l:hr" flag; do
 
 
 				echo -e "\nbackend $remdn\n     server $sdn $remdn:$rempt check sni req.ssl_sni $pxy" | tee -a $hpxcfg >/dev/null
-				echo
-				echo -e "\nBackend ${grn}created${cln}\n"
+				echo -e "Backend ${grn}created${cln}\n"
 
 			else
-				echo
-				echo -e "\nBackend ${ylw}exists${cln}\n"
+				echo -e "Backend ${ylw}exists${cln}\n"
 			fi
 
 		fi

@@ -46,21 +46,22 @@ makespin () {
 getcert () {
 
 #	certbot certonly --nginx --non-interactive --agree-tos --quiet --test-cert -m postmaster@"$fqdn" -d "$fqdn""$veveve"
-	echo -e "Certificate requested: $fqdn$veveve\n"
+	echo -e "Certificate requested: $fqdn$veveve\n" | tee -a /home/noble/salt
 }
 
 veveve=""
 
+echo
+
 if [[ "$*" == "" ]]; then											# if no arguments
 
-	echo
-
 	read -r -p "Enter domain name: " fqdn									# Ask for domain and read input
+
+	echo
 
 	if [[ "$fqdn" = *.*.* ]]; then										# if subdomain exists
 
 #		vhost
-		echo
 		echo -en "Getting certificate for $fqdn ...................   "
 		makespin "getcert" 
 		echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
@@ -70,7 +71,6 @@ if [[ "$*" == "" ]]; then											# if no arguments
 
 #		vhost
 #		whost
-		echo
 		echo -en "Getting certificate for $fqdn ...................   "
 		veveve=",www.${fqdn}"
 		makespin "getcert"
@@ -94,7 +94,6 @@ else														# if arguments exist
 		if [[ "$fqdn" = *.*.* ]]; then 									# if the argument contains a subdomain
 
 #			vhost
-			echo
 			echo -en "Getting certificate for $fqdn ...................   "
 			makespin "getcert" 
 			echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
@@ -104,7 +103,6 @@ else														# if arguments exist
 
 #			vhost
 #			whost
-			echo
 			echo -en "Getting certificate for $fqdn ...................   "
 			veveve=",www.${fqdn}"
 			makespin "getcert"
