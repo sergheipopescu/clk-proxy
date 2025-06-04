@@ -163,7 +163,6 @@ echo -n | crontab -
 crontab -l | { cat; echo "0 5 * * 6 /usr/local/sbin/update-ngxblocker >/dev/null 2>&1"; } | crontab - 
 okay
 
-echo -e "\033[1;34m Reloading nginx proxy ...\033[0m\n"
 
 ###
 ## Enable streams (or not)
@@ -172,8 +171,8 @@ echo -e "\033[1;34m Reloading nginx proxy ...\033[0m\n"
  
 if command -v haproxy &>/dev/null; then					# Check if haproxy is installed
 
-	nginx-backend
-	echo
+	echo -n "Configuring nginx backend .......................   "
+	makespin "nginx-backend"
 
 else
 	echo
@@ -199,6 +198,8 @@ else
 	fi
 
 fi
+
+echo -e "\033[1;34m Reloading nginx proxy ...\033[0m\n"
 
 { echo -e "\033[36m\ntesting nginx config...\033[0m\n"; sudo nginx -q -t; } || { echo -e "\n\033[1;91mnginx config test failed. Review errors and retry\n"; exit 1; }
 
