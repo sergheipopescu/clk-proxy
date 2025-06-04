@@ -201,7 +201,7 @@ fi
 
 echo -e "\033[1;34m Reloading nginx proxy ...\033[0m\n"
 
-{ echo -e "\033[36m\ntesting nginx config...\033[0m\n"; sudo nginx -q -t; } || { echo -e "\n\033[1;91mnginx config test failed. Review errors and retry\n"; exit 1; }
+{ echo -e "\033[36mtesting nginx config...\033[0m\n"; sudo nginx -q -t; } || { echo -e "\n\033[1;91mnginx config test failed. Review errors and retry\n"; exit 1; }
 
 systemctl restart nginx
 
