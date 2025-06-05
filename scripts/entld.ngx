@@ -46,11 +46,11 @@ makespin () {
 
 getcert () {
 
-#	certbot certonly --nginx --non-interactive --agree-tos --quiet --test-cert -m postmaster@"$fqdn" -d "$fqdn""$veveve"
-	echo -e "Certificate requested: $fqdn$veveve\n" | tee -a /home/noble/salt
+	certbot certonly --nginx --non-interactive --agree-tos --quiet --test-cert -m postmaster@"$fqdn" -d "$fqdn""$veveve"
+
 }
 
-confirm () {
+confcert () {
 
 	echo -e "${cyn}$fqdn${cln} SSL Certificate ${grn}installed${cln}\n"
 }
@@ -72,9 +72,9 @@ if [[ "$*" == "" ]]; then											# if no arguments
 
 	read -r -p "Enter domain name: " fqdn									# Ask for domain and read input
 
-	if grep -q "$fqdn" /home/noble/salt; then
+	if [ -f /etc/nginx/sites-available/"$fqdn" ]; then
 
-		echo -e "Domain map $fqdn ${ylw}exists${cln}\n"
+		echo -e "Server block $fqdn ${ylw}exists${cln}\n"
 		exit 1
 
 	fi
@@ -83,21 +83,21 @@ if [[ "$*" == "" ]]; then											# if no arguments
 
 	if [[ "$fqdn" = *.*.* ]]; then										# if subdomain exists
 
-#		vhost
+		vhost
 		echo -en "Getting certificate for $fqdn ...................   "
 		makespin "getcert" 
-#		confirm
-#		engxsite
+#		confcert
+		engxsite
 
 	elif [[ "$fqdn" = *.* ]]; then										# if there is no subdomain
 
-#		vhost
-#		whost
+		vhost
+		whost
 		echo -en "Getting certificate for $fqdn ...................   "
 		veveve=",www.${fqdn}"
 		makespin "getcert"
-#		confirm
-#		engxsite
+#		confcert
+		engxsite
 
 	else													# if the argument is not a domain
 
@@ -113,30 +113,30 @@ else														# if arguments exist
 
 	for fqdn in "$@"; do 											# for each argument
 
-		if grep -q "$fqdn" /home/noble/salt; then
+		if [ -f /etc/nginx/sites-available/"$fqdn" ]; then
 
-			echo -e "Domain map $fqdn ${ylw}exists${cln}\n"
+			echo -e "Server block $fqdn ${ylw}exists${cln}\n"
 			exit 1
 
 		fi
 
 		if [[ "$fqdn" = *.*.* ]]; then 									# if the argument contains a subdomain
 
-#			vhost
+			vhost
 			echo -en "Getting certificate for $fqdn ...................   "
 			makespin "getcert" 
-#			confirm
-#			engxsite
+#			confcert
+			engxsite
 
 		elif [[ "$fqdn" = *.* ]]; then 									# if the argument has no subdomain
 
-#			vhost
-#			whost
+			vhost
+			whost
 			echo -en "Getting certificate for $fqdn ...................   "
 			veveve=",www.${fqdn}"
 			makespin "getcert"
-#			confirm
-#			engxsite
+#			confcert
+			engxsite
 
 		else												# if the argument is not a domain
 

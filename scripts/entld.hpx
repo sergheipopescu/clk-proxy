@@ -74,7 +74,7 @@ while getopts ":l:hr" flag; do
 			if ! grep -q "backend $remdn" $hpxcfg; then	
 
 
-				echo -e "\nbackend $remdn\n     server $sdn $remdn:$rempt check sni req.ssl_sni $pxy" | tee -a $hpxcfg >/dev/null
+				echo -e "backend $remdn\n     server $sdn $remdn:$rempt check sni req.ssl_sni $pxy" | tee -a $hpxcfg >/dev/null
 				echo -e "Backend ${grn}created${cln}\n"
 
 			else
@@ -93,7 +93,7 @@ while getopts ":l:hr" flag; do
 
 			if grep -q "$OPTARG" $domfile; then
 
-					echo -e "Domain map $fqdn ${ylw}exists${cln}\n"
+					echo -e "Domain map $OPTARG ${ylw}exists${cln}\n"
 					exit 1
 
 			fi
