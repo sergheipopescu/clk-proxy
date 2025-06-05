@@ -6,6 +6,7 @@ set -a										# export all variables
 cln=$(echo -en '\033[0m')
 red=$(echo -en '\033[0;31m')
 grn=$(echo -en '\033[32m')
+ylw=$(echo -en '\033[33m')
 cyn=$(echo -en '\033[36m')
 bred=$(echo -en '\033[1;91m')
 
@@ -71,6 +72,13 @@ if [[ "$*" == "" ]]; then											# if no arguments
 
 	read -r -p "Enter domain name: " fqdn									# Ask for domain and read input
 
+	if grep -q "$fqdn" /home/noble/salt; then
+
+		echo -e "Domain map $fqdn ${ylw}exists${cln}\n"
+		exit 1
+
+	fi
+
 	echo
 
 	if [[ "$fqdn" = *.*.* ]]; then										# if subdomain exists
@@ -104,6 +112,13 @@ if [[ "$*" == "" ]]; then											# if no arguments
 else														# if arguments exist
 
 	for fqdn in "$@"; do 											# for each argument
+
+		if grep -q "$fqdn" /home/noble/salt; then
+
+			echo -e "Domain map $fqdn ${ylw}exists${cln}\n"
+			exit 1
+
+		fi
 
 		if [[ "$fqdn" = *.*.* ]]; then 									# if the argument contains a subdomain
 
