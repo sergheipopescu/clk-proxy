@@ -6,7 +6,6 @@
 
 # set -a										# export all variables
 
-
 help () {
 
 	echo
@@ -43,8 +42,8 @@ while getopts ":l:n:hr" flag; do
 
 			if [[ "$fqdn" = *.* ]]; then
 
-				eval "entld.hpx -l $fqdn"
-				eval "entld.ngx $fqdn"
+				entld.hpx -l "$fqdn"
+				entld.ngx "$fqdn"
 
 			else
 
@@ -66,7 +65,7 @@ while getopts ":l:n:hr" flag; do
 
 				if [[ "$fqdn" = *.* ]]; then
 
-					eval "entld.ngx $fqdn"
+					entld.ngx "$fqdn"
 
 				else
 

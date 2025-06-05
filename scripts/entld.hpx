@@ -91,6 +91,13 @@ while getopts ":l:hr" flag; do
 
 		else
 
+			if grep -q "$OPTARG" $domfile; then
+
+					echo -e "Domain map $fqdn ${ylw}exists${cln}\n"
+					exit 1
+
+			fi
+
 			echo -e "$OPTARG" | tee -a $domfile >/dev/null
 
 		fi
