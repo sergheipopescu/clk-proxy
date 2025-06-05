@@ -208,4 +208,4 @@ systemctl restart nginx
 # Cursor on
 tput cnorm
 
-printf "\n\033[1;32m   nginx proxy installed! \033[0m \n"
+printf "\n\033[1;32m   nginx proxy installed! \033[0m \n\n"
