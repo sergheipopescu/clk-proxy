@@ -46,7 +46,7 @@ makespin () {
 
 getcert () {
 
-	certbot certonly --nginx --non-interactive --agree-tos --quiet --test-cert -m postmaster@"$fqdn" -d "$fqdn""$veveve"
+	certbot certonly --nginx --non-interactive --agree-tos --quiet -m postmaster@"$fqdn" -d "$fqdn""$veveve"
 
 }
 
