@@ -63,7 +63,7 @@ mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
 cp "$scriptdir"/confs/haproxy.cfg /etc/haproxy/haproxy.cfg
 
 # Create log directory
-mkdir /var/log/HAProxy
+mkdir /var/log/haproxy
 
 # Modify HAProxy rsyslog.d log file location and template
 sed -i '1i\# LogFormat\ntemplate(name="HAProxy" type="list") {\n    property(name="msg" spifno1stsp="on" )\n    property(name="msg" droplastlf="on" )\n    constant(value="\\n")\n    }\n' /etc/rsyslog.d/49-haproxy.conf
