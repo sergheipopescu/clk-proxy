@@ -69,6 +69,6 @@ else
 
 fi
 
-echo Cleanup?
-#rm -rf "$scriptdir"
+#echo Cleanup?
+rm -rf "$scriptdir"
 echo
