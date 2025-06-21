@@ -45,10 +45,10 @@ while getopts ":l:hr" flag; do
 
 		if [[ $pxy =~ ^[Yy] ]]; then								# proxy protocol enabled/disabled variable
 
-			pxy="send-proxy-v2-ssl\n\n"
+			pxy="send-proxy-v2-ssl\n"
 		else
 
-			pxy="\n\n"
+			pxy="\n"
 		fi
 
 		echo
@@ -62,7 +62,7 @@ while getopts ":l:hr" flag; do
 		# Check for fqdn map #
 			if ! grep -q "$fqdn" $domap; then
 
-				echo -e "$fqdn       	$remdn\n" | tee -a $domap >/dev/null
+				echo -e "$fqdn       	$remdn" | tee -a $domap >/dev/null
 				echo -e "\n\n\nDomain map ${grn}created${cln}\n"
 
 			else
@@ -71,7 +71,7 @@ while getopts ":l:hr" flag; do
 			fi
 
 		# Check for backend #
-			if ! grep -q "backend $remdn" $hpxcfg; then	
+			if ! grep -q "backend $remdn" $hpxcfg; then
 
 
 				echo -e "backend $remdn\n     server $sdn $remdn:$rempt check sni req.ssl_sni $pxy" | tee -a $hpxcfg >/dev/null
